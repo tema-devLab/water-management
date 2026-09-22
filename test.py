@@ -1,4 +1,4 @@
-from flask import Flask,jsonify
+from flask import Flask,jsonify,request
 import mysql.connector
 app = Flask(__name__)
 
@@ -22,3 +22,19 @@ def get_demandes():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+from flask import request
+
+@app.route("/api/demandes", methods=["POST"])
+def add_demande():
+    data = request.get_json()
+    conn = get_connexion()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO demandes (objet, statut) VALUES (%s, %s)",
+        (data["objet"], "en cours")
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"message": "Demande ajoutée avec succès"}), 201
