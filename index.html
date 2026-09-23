@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Demandes eau</title>
+</head>
+<body>
+    <h2>Ajouter une demande</h2>
+    <input type="text" id="objet" placeholder="Objet de la demande">
+    <button onclick="ajouterDemande()">Envoyer</button>
+
+    <h2>Liste des demandes</h2>
+    <ul id="liste"></ul>
+
+    <script>
+        function chargerDemandes() {
+            fetch("http://127.0.0.1:5000/api/demandes")
+                .then(res => res.json())
+                .then(data => {
+                    let liste = document.getElementById("liste");
+                    liste.innerHTML = "";
+                    data.forEach(d => {
+                        liste.innerHTML += `<li>${d.objet} — ${d.statut}</li>`;
+                    });
+                });
+        }
+
+        function ajouterDemande() {
+            let objet = document.getElementById("objet").value;
+            fetch("http://127.0.0.1:5000/api/demandes", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ objet: objet })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                document.getElementById("objet").value = "";
+                chargerDemandes();
+            });
+        }
+
+        chargerDemandes();
+    </script>
+    <h2>Connexion employé</h2>
+<input type="text" id="user" placeholder="Nom d'utilisateur">
+<input type="password" id="pass" placeholder="Mot de passe">
+<button onclick="login()">Se connecter</button>
+
+<script>
+function login() {
+    fetch("http://127.0.0.1:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            username: document.getElementById("user").value,
+            password: document.getElementById("pass").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message));
+}
+</script>
+</body>
+</html>
