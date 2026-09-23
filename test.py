@@ -9,6 +9,8 @@ def home():
 
 @app.route("/employe.html")
 def page_employe():
+    if not session.get("connecte"):
+        return "<h2>Accès refusé — veuillez vous connecter d'abord.</h2><a href='/index.html'>Retour à la connexion</a>", 401
     return send_from_directory(".", "employe.html")
 
 def get_connexion():
@@ -50,20 +52,35 @@ from flask import session
 
 app.secret_key = "une_cle_secrete_123"  # nécessaire pour les sessions
 
-# Compte employé simple (en dur pour l'instant)
-EMPLOYE = {"username": "employe1", "password": "azerty123"}
-
 @app.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
-    if data["username"] == EMPLOYE["username"] and data["password"] == EMPLOYE["password"]:
+    conn = get_connexion()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT * FROM employes WHERE username = %s AND password = %s",
+        (data["username"], data["password"])
+    )
+    employe = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if employe:
         session["connecte"] = True
-        return jsonify({"message": "Connexion réussie"})
+        session["nom"] = employe["nom"]
+        return jsonify({"message": "Connexion réussie", "nom": employe["nom"]})
     return jsonify({"message": "Identifiants incorrects"}), 401
+
+
 
 @app.route("/api/statut", methods=["GET"])
 def check_login():
     return jsonify({"connecte": session.get("connecte", False)})
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"message": "Déconnecté"})
+
 if __name__ == "__main__":
     app.run(debug=True)
+

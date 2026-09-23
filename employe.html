@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Espace employé</title></head>
+<body>
+<h2>Demandes à traiter</h2>
+<table border="1" id="tableDemandes">
+  <tr><th>Objet</th><th>Statut</th><th>Action</th></tr>
+</table>
+
+<button onclick="deconnexion()">Se déconnecter</button>
+
+<script>
+function charger() {
+    fetch("http://127.0.0.1:5000/api/demandes")
+    .then(res => res.json())
+    .then(data => {
+        let table = document.getElementById("tableDemandes");
+        table.innerHTML = "<tr><th>Objet</th><th>Statut</th><th>Action</th></tr>";
+        data.forEach(d => {
+            table.innerHTML += `
+              <tr>
+                <td>${d.objet}</td>
+                <td>${d.statut}</td>
+                <td>
+                  <select id="statut-${d.id}">
+                    <option value="en cours">en cours</option>
+                    <option value="traité">traité</option>
+                    <option value="refusé">refusé</option>
+                  </select>
+                  <button onclick="changerStatut(${d.id})">Modifier</button>
+                </td>
+              </tr>`;
+        });
+    });
+}
+
+function changerStatut(id) {
+    let nouveauStatut = document.getElementById("statut-" + id).value;
+    fetch(`http://127.0.0.1:5000/api/demandes/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ statut: nouveauStatut })
+    })
+    .then(res => res.json())
+    .then(data => { alert(data.message); charger(); });
+}
+
+function deconnexion() {
+    fetch("http://127.0.0.1:5000/api/logout", { method: "POST", credentials: "include" })
+    .then(() => window.location.href = "/index.html");
+}
+
+charger();
+</script>
+
+</body>
+</html>
