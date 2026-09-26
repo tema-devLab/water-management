@@ -1,0 +1,172 @@
+/* =========================
+RÉINITIALISATION
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+PAGE
+========================= */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(
+        135deg,
+        #e0f7fa,
+        #f5fbff
+    );
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #263238;
+}
+
+/* =========================
+CONTENEUR PRINCIPAL
+========================= */
+.container {
+    width: 100%;
+    max-width: 750px;
+    margin: auto;
+}
+
+/* =========================
+HEADER & LOGO
+========================= */
+header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+header img {
+    max-width: 280px;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+header h1 {
+    color: #0077b6;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #607d8b;
+    font-size: 16px;
+}
+
+/* =========================
+CARTES
+========================= */
+.card {
+    background: white;
+    padding: 30px;
+    margin-bottom: 25px;
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e3f2fd;
+}
+
+/* =========================
+TITRE DES CARTES
+========================= */
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card-title h2 {
+    color: #0077b6;
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+.card-title p {
+    color: #78909c;
+    font-size: 14px;
+}
+
+/* =========================
+FORMULAIRES & CHAMPS
+========================= */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    color: #455a64;
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="password"],
+select,
+input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #cfd8dc;
+    border-radius: 10px;
+    font-size: 15px;
+    background-color: #fafafa;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
+    border-color: #0077b6;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.15);
+}
+
+/* =========================
+BOUTONS
+========================= */
+button {
+    width: 100%;
+    background-color: #0077b6;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #005f92;
+}
+
+/* =========================
+MESSAGES DE RETOUR
+========================= */
+.status-msg {
+    margin-top: 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #2e7d32;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
