@@ -310,6 +310,32 @@
     }
 
 </script>
+    <h2>Connexion employé</h2>
+    <input type="text" id="user" placeholder="Nom d'utilisateur">
+    <input type="password" id="pass" placeholder="Mot de passe">
+    <button onclick="loginEmploye()">Se connecter</button>
+    <p id="statutLogin"></p>
+
+<script>
+function loginEmploye() {
+    fetch("http://127.0.0.1:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            username: document.getElementById("user").value,
+            password: document.getElementById("pass").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("statutLogin").innerText = data.message;
+        if (data.message === "Connexion réussie") {
+            window.location.href = "/employe.html";
+        }
+    });
+}
+</script>
 
 </body>
 </html>

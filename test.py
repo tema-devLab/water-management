@@ -1,6 +1,9 @@
 from flask import Flask,jsonify,request,session,send_from_directory
 import mysql.connector
 import uuid
+from flask.json.provider import DefaultJSONProvider
+DefaultJSONProvider.default = staticmethod(lambda o: str(o))
+
 app = Flask(__name__)
 
 @app.route("/")
@@ -26,7 +29,14 @@ def get_connexion():
 def get_demandes():
     conn = get_connexion()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM demandes")
+    cursor.execute("""
+        SELECT demandes.id, demandes.numero_suivi, demandes.objet,
+               demandes.type_demande, demandes.statut, demandes.date_creation,
+               citoyens.nom, citoyens.prenom
+        FROM demandes
+        LEFT JOIN citoyens ON demandes.citoyen_id = citoyens.id
+        ORDER BY demandes.date_creation ASC
+    """)
     resultat = cursor.fetchall()
     cursor.close()
     conn.close()
@@ -108,6 +118,22 @@ def inscription_citoyen():
     conn.close()
     session["citoyen_id"] = citoyen_id
     return jsonify({"message": "Compte créé", "citoyen_id": citoyen_id}), 201
+
+@app.route("/api/demandes/<int:id>", methods=["PUT"])
+def update_statut(id):
+    if not session.get("connecte"):
+        return jsonify({"message": "Non autorisé"}), 401
+    data = request.get_json()
+    conn = get_connexion()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE demandes SET statut = %s WHERE id = %s",
+        (data["statut"], id)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"message": "Statut mis à jour"})
 
 if __name__ == "__main__":
     app.run(debug=True)

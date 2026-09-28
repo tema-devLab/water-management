@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <link rel="stylesheet" href="style.css">
-  <meta charset="UTF-8"><title>Espace employé</title>
-</head>
+<head><meta charset="UTF-8"><title>Espace employé</title></head>
 <body>
-<h2>Demandes à traiter</h2>
+<h2>Demandes à traiter (par ordre d'arrivée)</h2>
 <table border="1" id="tableDemandes">
-  <tr><th>Objet</th><th>Statut</th><th>Action</th></tr>
+  <tr><th>N° Suivi</th><th>Citoyen</th><th>Objet</th><th>Type</th><th>Date</th><th>Statut</th><th>Action</th></tr>
 </table>
 
 <button onclick="deconnexion()">Se déconnecter</button>
@@ -18,11 +15,15 @@ function charger() {
     .then(res => res.json())
     .then(data => {
         let table = document.getElementById("tableDemandes");
-        table.innerHTML = "<tr><th>Objet</th><th>Statut</th><th>Action</th></tr>";
+        table.innerHTML = "<tr><th>N° Suivi</th><th>Citoyen</th><th>Objet</th><th>Type</th><th>Date</th><th>Statut</th><th>Action</th></tr>";
         data.forEach(d => {
             table.innerHTML += `
               <tr>
+                <td>${d.numero_suivi || "—"}</td>
+                <td>${d.nom || ""} ${d.prenom || ""}</td>
                 <td>${d.objet}</td>
+                <td>${d.type_demande || "—"}</td>
+                <td>${d.date_creation}</td>
                 <td>${d.statut}</td>
                 <td>
                   <select id="statut-${d.id}">
@@ -56,6 +57,5 @@ function deconnexion() {
 
 charger();
 </script>
-
 </body>
 </html>
