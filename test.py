@@ -135,6 +135,32 @@ def update_statut(id):
     conn.close()
     return jsonify({"message": "Statut mis à jour"})
 
+@app.route("/api/citoyen/login", methods=["POST"])
+def login_citoyen():
+    data = request.get_json()
+    conn = get_connexion()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT * FROM citoyens WHERE username = %s AND password = %s",
+        (data["username"], data["password"])
+    )
+    citoyen = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if citoyen:
+        session["citoyen_id"] = citoyen["id"]
+        return jsonify({"message": "Connexion réussie", "nom": citoyen["nom"]})
+    return jsonify({"message": "Identifiants incorrects"}), 401
+
+@app.route("/api/citoyen/logout", methods=["POST"])
+def logout_citoyen():
+    session.pop("citoyen_id", None)
+    return jsonify({"message": "Déconnecté"})
+
+@app.route("/style.css")
+def style():
+    return send_from_directory(".", "style.css")
+
 if __name__ == "__main__":
     app.run(debug=True)
 

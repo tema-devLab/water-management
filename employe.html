@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><title>Espace employé</title></head>
+<head>
+<meta charset="UTF-8">
+<title>Espace employé</title>
+<link rel="stylesheet" href="style.css">
+</head>
 <body>
+<div class="conteneur">
+<h1>💧 Espace employé</h1>
+<div class="carte carte-suivi">
 <h2>Demandes à traiter (par ordre d'arrivée)</h2>
-<table border="1" id="tableDemandes">
+<table id="tableDemandes">
   <tr><th>N° Suivi</th><th>Citoyen</th><th>Objet</th><th>Type</th><th>Date</th><th>Statut</th><th>Action</th></tr>
 </table>
-
-<button onclick="deconnexion()">Se déconnecter</button>
+<button onclick="deconnexion()" style="margin-top:14px;">Se déconnecter</button>
+</div>
+</div>
 
 <script>
 function charger() {

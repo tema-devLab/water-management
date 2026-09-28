@@ -1,322 +1,108 @@
 <!DOCTYPE html>
-
-<html lang="fr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Demandes Eau</title>
-
-<!-- Liaison avec le fichier CSS -->
+<meta charset="UTF-8">
+<title>agence du bassin hydraulique oum rbia</title>
 <link rel="stylesheet" href="style.css">
-
-
 </head>
-
 <body>
+<div class="conteneur">
+<h1>agence du bassin hydraulique oum rbia</h1>
 
+<div class="grille-cartes">
 
-<div class="container">
+  <div class="carte">
+    <h2>Créer un compte</h2>
+    <input type="text" id="nom" placeholder="Nom">
+    <input type="text" id="prenom" placeholder="Prénom">
+    <input type="text" id="username" placeholder="Nom d'utilisateur">
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button onclick="creerCompte()">Créer mon compte</button>
+    <p id="statutCompte"></p>
+  </div>
 
-    <!-- En-tête -->
-    <header>
-        <img src="eau.jpg" alt="Gestion de l'eau">
-        <p>Créez votre compte, envoyez une demande et suivez son état.</p>
-    </header>
+  <div class="carte">
+    <h2>Soumettre une demande</h2>
+    <input type="text" id="objet" placeholder="Objet de la demande">
+    <select id="type_demande">
+        <option value="autorisation">Autorisation</option>
+        <option value="reclamation">Réclamation</option>
+    </select>
+    <button onclick="envoyerDemande()">Envoyer la demande</button>
+    <p id="resultatDemande"></p>
+  </div>
 
-
-    <!-- Création de compte -->
-    <section class="card">
-
-        <div class="card-title">
-            <span class="icon">👤</span>
-            <div>
-                <h2>Créer un compte</h2>
-                <p>Remplissez les informations ci-dessous</p>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="nom">Nom</label>
-            <input
-                type="text"
-                id="nom"
-                placeholder="Entrez votre nom"
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="prenom">Prénom</label>
-            <input
-                type="text"
-                id="prenom"
-                placeholder="Entrez votre prénom"
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="username">Nom d'utilisateur</label>
-            <input
-                type="text"
-                id="username"
-                placeholder="Choisissez un nom d'utilisateur"
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="password">Mot de passe</label>
-            <input
-                type="password"
-                id="password"
-                placeholder="Entrez votre mot de passe"
-            >
-        </div>
-
-        <button class="btn btn-primary" onclick="creerCompte()">
-            Créer mon compte
-        </button>
-
-        <p id="statutCompte" class="message"></p>
-
-    </section>
-
-
-    <!-- Soumettre une demande -->
-    <section class="card">
-
-        <div class="card-title">
-            <span class="icon">📝</span>
-            <div>
-                <h2>Soumettre une demande</h2>
-                <p>Envoyez votre demande à l'administration</p>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="objet">Objet de la demande</label>
-
-            <input
-                type="text"
-                id="objet"
-                placeholder="Exemple : Demande de raccordement"
-            >
-        </div>
-
-        <div class="form-group">
-            <label for="type_demande">Type de demande</label>
-
-            <select id="type_demande">
-                <option value="autorisation">
-                    Autorisation
-                </option>
-
-                <option value="reclamation">
-                    Réclamation
-                </option>
-            </select>
-        </div>
-
-        <button class="btn btn-success" onclick="envoyerDemande()">
-            📤 Envoyer la demande
-        </button>
-
-        <p id="resultatDemande" class="message"></p>
-
-    </section>
-
-
-    <!-- Suivre une demande -->
-    <section class="card">
-
-        <div class="card-title">
-            <span class="icon">🔎</span>
-            <div>
-                <h2>Suivre ma demande</h2>
-                <p>Consultez l'état de votre demande</p>
-            </div>
-        </div>
-
-        <div class="form-group">
-
-            <label for="numeroSuivi">
-                Numéro de suivi
-            </label>
-
-            <input
-                type="text"
-                id="numeroSuivi"
-                placeholder="Exemple : DEM-XXXXXXXX"
-            >
-
-        </div>
-
-        <button class="btn btn-secondary" onclick="suivreDemande()">
-            🔍 Vérifier le statut
-        </button>
-
-        <p id="resultatSuivi" class="message"></p>
-
-    </section>
-
-
-    <!-- Pied de page -->
-    <footer>
-        <p>💧 Service de gestion des demandes d'eau</p>
-    </footer>
+  <div class="carte carte-suivi">
+    <h2>Suivre ma demande</h2>
+    <input type="text" id="numeroSuivi" placeholder="Numéro de suivi (DEM-XXXXXXXX)">
+    <button onclick="suivreDemande()">Vérifier le statut</button>
+    <p id="resultatSuivi"></p>
+  </div>
 
 </div>
+</div>
 
-
-<!-- ========================= -->
-<!-- JAVASCRIPT -->
-<!-- ========================= -->
-
-<script>
-
-    /* =========================
-       CRÉER UN COMPTE
-       ========================= */
-
-    function creerCompte() {
-
-        fetch("http://127.0.0.1:5000/api/citoyen/inscription", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            credentials: "include",
-
-            body: JSON.stringify({
-
-                nom: document.getElementById("nom").value,
-
-                prenom: document.getElementById("prenom").value,
-
-                username: document.getElementById("username").value,
-
-                password: document.getElementById("password").value
-
-            })
-        })
-
-        .then(res => res.json())
-
-        .then(data => {
-
-            document.getElementById("statutCompte").innerText =
-                data.message;
-
-        })
-
-        .catch(error => {
-
-            document.getElementById("statutCompte").innerText =
-                "Erreur de connexion au serveur.";
-
-            console.error(error);
-
-        });
-    }
-
-
-    /* =========================
-       ENVOYER UNE DEMANDE
-       ========================= */
-
-    function envoyerDemande() {
-
-        fetch("http://127.0.0.1:5000/api/demandes", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            credentials: "include",
-
-            body: JSON.stringify({
-
-                objet:
-                    document.getElementById("objet").value,
-
-                type_demande:
-                    document.getElementById("type_demande").value
-
-            })
-        })
-
-        .then(res => res.json())
-
-        .then(data => {
-
-            document.getElementById("resultatDemande").innerText =
-
-                data.numero_suivi
-                    ? "Demande envoyée ! Votre numéro : "
-                      + data.numero_suivi
-
-                    : data.message;
-
-        })
-
-        .catch(error => {
-
-            document.getElementById("resultatDemande").innerText =
-                "Erreur de connexion au serveur.";
-
-            console.error(error);
-
-        });
-    }
-
-
-    /* =========================
-       SUIVRE UNE DEMANDE
-       ========================= */
-
-    function suivreDemande() {
-
-        let numero =
-            document.getElementById("numeroSuivi").value;
-
-        fetch(
-            "http://127.0.0.1:5000/api/suivi/" + numero
-        )
-
-        .then(res => res.json())
-
-        .then(data => {
-
-            document.getElementById("resultatSuivi").innerText =
-
-                data.statut
-                    ? "Statut : " + data.statut
-                    : data.message;
-
-        })
-
-        .catch(error => {
-
-            document.getElementById("resultatSuivi").innerText =
-                "Erreur de connexion au serveur.";
-
-            console.error(error);
-
-        });
-    }
-
-</script>
-    <h2>Connexion employé</h2>
+<!-- Bouton rond employé -->
+<div class="bouton-rond" onclick="toggleEmploye()">👤</div>
+<div class="panneau-employe" id="panneauEmploye">
+    <h2 style="font-size:0.95rem;margin-top:0;">Connexion employé</h2>
     <input type="text" id="user" placeholder="Nom d'utilisateur">
     <input type="password" id="pass" placeholder="Mot de passe">
     <button onclick="loginEmploye()">Se connecter</button>
     <p id="statutLogin"></p>
+</div>
 
 <script>
+function toggleEmploye() {
+    document.getElementById("panneauEmploye").classList.toggle("actif");
+}
+
+function creerCompte() {
+    fetch("http://127.0.0.1:5000/api/citoyen/inscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            nom: document.getElementById("nom").value,
+            prenom: document.getElementById("prenom").value,
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => { document.getElementById("statutCompte").innerText = data.message; })
+    .catch(() => { document.getElementById("statutCompte").innerText = "Erreur de connexion."; });
+}
+
+function envoyerDemande() {
+    fetch("http://127.0.0.1:5000/api/demandes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+            objet: document.getElementById("objet").value,
+            type_demande: document.getElementById("type_demande").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("resultatDemande").innerText =
+            data.numero_suivi ? "Numéro : " + data.numero_suivi : data.message;
+    })
+    .catch(() => { document.getElementById("resultatDemande").innerText = "Erreur de connexion."; });
+}
+
+function suivreDemande() {
+    let numero = document.getElementById("numeroSuivi").value;
+    fetch("http://127.0.0.1:5000/api/suivi/" + numero)
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("resultatSuivi").innerText =
+            data.statut ? "Statut : " + data.statut : data.message;
+    })
+    .catch(() => { document.getElementById("resultatSuivi").innerText = "Erreur de connexion."; });
+}
+
 function loginEmploye() {
     fetch("http://127.0.0.1:5000/api/login", {
         method: "POST",
@@ -330,12 +116,9 @@ function loginEmploye() {
     .then(res => res.json())
     .then(data => {
         document.getElementById("statutLogin").innerText = data.message;
-        if (data.message === "Connexion réussie") {
-            window.location.href = "/employe.html";
-        }
+        if (data.message === "Connexion réussie") window.location.href = "/employe.html";
     });
 }
 </script>
-
 </body>
 </html>
