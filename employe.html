@@ -13,6 +13,7 @@
 <table id="tableDemandes">
   <tr><th>N° Suivi</th><th>Citoyen</th><th>Objet</th><th>Type</th><th>Date</th><th>Statut</th><th>Action</th></tr>
 </table>
+<button onclick="viderTableau()" style="background-color:#c0392b;">Vider tout le tableau</button>
 <button onclick="deconnexion()" style="margin-top:14px;">Se déconnecter</button>
 </div>
 </div>
@@ -40,6 +41,7 @@ function charger() {
                     <option value="refusé">refusé</option>
                   </select>
                   <button onclick="changerStatut(${d.id})">Modifier</button>
+                  <button onclick="supprimerDemande(${d.id})" style="background-color:#c0392b;">Supprimer</button>
                 </td>
               </tr>`;
         });
@@ -53,6 +55,26 @@ function changerStatut(id) {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ statut: nouveauStatut })
+    })
+    .then(res => res.json())
+    .then(data => { alert(data.message); charger(); });
+}
+
+function supprimerDemande(id) {
+    if (!confirm("Supprimer cette demande définitivement ?")) return;
+    fetch(`http://127.0.0.1:5000/api/demandes/${id}`, {
+        method: "DELETE",
+        credentials: "include"
+    })
+    .then(res => res.json())
+    .then(data => { alert(data.message); charger(); });
+}
+
+function viderTableau() {
+    if (!confirm("Supprimer TOUTES les demandes ? Action irréversible.")) return;
+    fetch("http://127.0.0.1:5000/api/demandes", {
+        method: "DELETE",
+        credentials: "include"
     })
     .then(res => res.json())
     .then(data => { alert(data.message); charger(); });

@@ -108,16 +108,20 @@ def inscription_citoyen():
     data = request.get_json()
     conn = get_connexion()
     cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO citoyens (nom, prenom, username, password) VALUES (%s, %s, %s, %s)",
-        (data["nom"], data["prenom"], data["username"], data["password"])
-    )
-    conn.commit()
-    citoyen_id = cursor.lastrowid
-    cursor.close()
-    conn.close()
-    session["citoyen_id"] = citoyen_id
-    return jsonify({"message": "Compte créé", "citoyen_id": citoyen_id}), 201
+    try:
+        cursor.execute(
+            "INSERT INTO citoyens (nom, prenom, username, password) VALUES (%s, %s, %s, %s)",
+            (data["nom"], data["prenom"], data["username"], data["password"])
+        )
+        conn.commit()
+        citoyen_id = cursor.lastrowid
+        session["citoyen_id"] = citoyen_id
+        return jsonify({"message": "Compte créé", "citoyen_id": citoyen_id}), 201
+    except mysql.connector.IntegrityError:
+        return jsonify({"message": "Ce nom d'utilisateur existe déjà"}), 400
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route("/api/demandes/<int:id>", methods=["PUT"])
 def update_statut(id):
@@ -156,6 +160,30 @@ def login_citoyen():
 def logout_citoyen():
     session.pop("citoyen_id", None)
     return jsonify({"message": "Déconnecté"})
+
+@app.route("/api/demandes/<int:id>", methods=["DELETE"])
+def supprimer_demande(id):
+    if not session.get("connecte"):
+        return jsonify({"message": "Non autorisé"}), 401
+    conn = get_connexion()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM demandes WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"message": "Demande supprimée"})
+
+@app.route("/api/demandes", methods=["DELETE"])
+def vider_demandes():
+    if not session.get("connecte"):
+        return jsonify({"message": "Non autorisé"}), 401
+    conn = get_connexion()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM demandes")
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"message": "Tableau vidé"})
 
 @app.route("/style.css")
 def style():
